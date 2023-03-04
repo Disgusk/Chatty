@@ -2,9 +2,9 @@ import os
 import azure.cognitiveservices.speech as speechsdk
 import json
 
-def pron_check_and_read_from_file():
+def pron_check_and_read_from_file(audio_path='sample.wav'):
     speech_config = speechsdk.SpeechConfig(subscription=os.environ.get('SPEECH_KEY'), region=os.environ.get('SPEECH_REGION'))
-    audio_config = speechsdk.AudioConfig(filename="sample.wav")
+    audio_config = speechsdk.AudioConfig(filename=audio_path)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
     result = speech_recognizer.recognize_once_async().get()
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
@@ -24,7 +24,9 @@ def pron_check_and_read_from_file():
     result2 = speech_recognizer2.recognize_once()
     pronunciation_assessment_result_json = result2.properties.get(speechsdk.PropertyId.SpeechServiceResponse_JsonResult)
     json_results_pron = json.loads(pronunciation_assessment_result_json) #json version of Pronunciation check results.
-    print(json.dumps(json_results_pron, indent =4))
+    # print(json.dumps(json_results_pron, indent =4))
+
+    return ref_text, json_results_pron
     
 def pron_check_from_microphone():
         pronunciation_assessment_config = speechsdk.PronunciationAssessmentConfig(json_string="{\"ReferenceText\":\"Hello my name is George\",\"gradingSystem\":\"HundredMark\",\"granularity\":\"Phoneme\"}")
@@ -41,4 +43,5 @@ def pron_check_from_microphone():
         pronunciation_assessment_result_json = speech_recognition_result.properties.get(speechsdk.PropertyId.SpeechServiceResponse_JsonResult)
         print(pronunciation_assessment_result_json)
 
-pron_check_and_read_from_file()
+if __name__ == '__main__':
+    pron_check_and_read_from_file()

@@ -13,6 +13,7 @@ Send in the chat history and user's new input, ChatGPT gives you a response
 ***Return***
 - chat_history, a list of dictionary. It is extended based on the inputted chat_history, but with user's new input and ChatGPT's new response appended
 - gpt_msg, a string, ChatGPT's new response
+- total token used: a measurement of cost
 '''
 def chat_with_gpt(chat_history, user_input, print_conversation=False):
     suffix_phrase = ' Answer me using one sentence.'
