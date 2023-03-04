@@ -26,10 +26,12 @@ def recognize_from_microphone():
     return [speech_recognition_result, speech_recognition_result.text]
 
 def pron_check(reference_text):
-    print(reference_text[0])
     pronunciation_assessment_config = speechsdk.PronunciationAssessmentConfig(json_string="{\"ReferenceText\":\"%r\",\"gradingSystem\":\"HundredMark\",\"granularity\":\"Phoneme\"}" %reference_text[1])
+    
     pronunciation_assessment_config.apply_to(reference_text[0])
-    speech_recognition_result = reference_text[0].recognize_once()
+    print(reference_text[0])
+    #speech_recognition_result = reference_text[0].recognize_once()
+
     # The pronunciation assessment result as a JSON string
     pronunciation_assessment_result_json = speech_recognition_result.properties.get(speechsdk.PropertyId.SpeechServiceResponse_JsonResult)
     print(pronunciation_assessment_result_json)
