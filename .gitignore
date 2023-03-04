@@ -3,3 +3,5 @@
 .vscode
 notes.txt
 cost_estimation.py
+
+frontend/node_modules/*
