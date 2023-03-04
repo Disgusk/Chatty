@@ -17,15 +17,15 @@ def pron_check_and_read_from_file():
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
             print("Did you set the speech resource key and region values?")
-    ref_text = result.text
+    ref_text = result.text # Speech to text
     speech_recognizer2 =  speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
     pronunciation_assessment_config = speechsdk.PronunciationAssessmentConfig(json_string="{\"referenceText\":\"%s\",\"gradingSystem\":\"HundredMark\",\"granularity\":\"Phoneme\"}" %ref_text)
     pronunciation_assessment_config.apply_to(speech_recognizer2)
     result2 = speech_recognizer2.recognize_once()
     pronunciation_assessment_result_json = result2.properties.get(speechsdk.PropertyId.SpeechServiceResponse_JsonResult)
-    json_results_pron = json.loads(pronunciation_assessment_result_json)
+    json_results_pron = json.loads(pronunciation_assessment_result_json) #json version of Pronunciation check results.
     print(json.dumps(json_results_pron, indent =4))
-
+    
 def pron_check_from_microphone():
         pronunciation_assessment_config = speechsdk.PronunciationAssessmentConfig(json_string="{\"ReferenceText\":\"Hello my name is George\",\"gradingSystem\":\"HundredMark\",\"granularity\":\"Phoneme\"}")
         speech_config = speechsdk.SpeechConfig(subscription=os.environ.get('SPEECH_KEY'), region=os.environ.get('SPEECH_REGION'))
