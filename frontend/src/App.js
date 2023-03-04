@@ -1,6 +1,7 @@
 import './App.css';
 import { Div, Button, Icon, Input } from "atomize";
 import { useState } from 'react';
+import {AudioRecorder} from 'react-audio-voice-recorder';
 
 /*
     display: flex;
@@ -67,6 +68,14 @@ function App() {
       return "#ff0000"
     }
   }
+
+  const addAudioElement = (blob) => {
+    const url = URL.createObjectURL(blob);
+    const audio = document.createElement("audio");
+    audio.src = url;
+    audio.controls = true;
+    document.body.appendChild(audio);
+  };
 
   return (
     // main div that will have the whole page
@@ -162,6 +171,7 @@ function App() {
                 bg={getColor(value)}
                 h = "auto"
                 shadow="3"
+                rounded="md"
                 textColor="white"
                 p = {{ l: "2%", b: "2%", t: "2%" , r: "2%"}}
                 m = {{ t: "1rem" , r: "0.5rem", l: "0.5rem", r: "0.5rem"}}
@@ -186,21 +196,9 @@ function App() {
         h="10vh"        
         textColor="black"
         // this div will have mic button
-      >
-      
-        <Button
-          h="2.5rem"
-          w="2.5rem"
-          bg="success700"
-          hoverBg="success600"
-          rounded="circle"
-          m={{ b: "1rem" }}
-          shadow="2"
-          hoverShadow="4"
-        >
-          <Icon name="RBChecked" size="20px" color="red" />
+      >        
 
-        </Button>
+        <AudioRecorder onRecordingComplete={addAudioElement} />
 
       </Div>
 
