@@ -1,3 +1,5 @@
 .Renviron
 .env
 .vscode
+notes.txt
+cost_estimation.py
