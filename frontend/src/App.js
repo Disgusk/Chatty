@@ -1,7 +1,9 @@
 import './App.css';
 import { Div, Button, Icon, Input } from "atomize";
 import { useState } from 'react';
-import {AudioRecorder} from 'react-audio-voice-recorder';
+import AudioReactRecorder, { RecordState } from 'audio-react-recorder'
+ 
+
 
 /*
     display: flex;
@@ -17,8 +19,22 @@ function App() {
   const [botmessages, setBotMessages] = useState([]);
   const [usermessages, setUserMessages] = useState([]);
   const [pronuns, setPronuns] = useState({hello: "90", bye: "80", good: "70", bad: "60",  how: "50", are: "40", you: "30", today: "20", fine: "10"});
+  
+  // initialize recording stuff
+  const [recordState, setRecord] = useState(null);
 
-
+  const start = () => {
+    setRecord(RecordState.START)
+  }
+ 
+  const stop = () => {
+    setRecord(RecordState.STOP)
+  }
+ 
+  //audioData contains blob and blobUrl
+  const onStop = (audioData) => {
+    console.log('audioData', audioData)
+  }
 
 
   const [currentMessage, setCurrentMessage] = useState("");
@@ -69,12 +85,23 @@ function App() {
     }
   }
 
-  const addAudioElement = (blob) => {
-    const url = URL.createObjectURL(blob);
-    const audio = document.createElement("audio");
-    audio.src = url;
-    audio.controls = true;
-    document.body.appendChild(audio);
+  async function addAudioElement (blob) {  
+    console.log(blob['blob'])  
+    var file = new File([blob['blob']], "userAudio.wav");
+    const data = new FormData();
+    data.append('file', file);
+    
+    // audio works file
+    // const audio = document.createElement("audio");
+    // audio.src = blob['url'];
+    // audio.controls = true;
+    // document.body.appendChild(audio);
+
+    let response = await fetch('http://localhost:5000/getResponse?audioUrl='+blob['url'], {method: 'POST', body:data}).then(
+      console.log(response) 
+    )
+   
+    // URL.revokeObjectURL(blob)
   };
 
   return (
@@ -174,7 +201,8 @@ function App() {
                 rounded="md"
                 textColor="white"
                 p = {{ l: "2%", b: "2%", t: "2%" , r: "2%"}}
-                m = {{ t: "1rem" , r: "0.5rem", l: "0.5rem", r: "0.5rem"}}
+                m = {{ t: "1rem" , l: "0.5rem", r: "0.5rem"}}
+                key={key}
               >
                 {key} 
               </Div>
@@ -186,7 +214,8 @@ function App() {
 
       </Div>
 
-      
+            
+      <AudioReactRecorder state={recordState} onStop={addAudioElement} canvasHeight={50} />
 
       <Div
         d="flex"
@@ -198,7 +227,36 @@ function App() {
         // this div will have mic button
       >        
 
-        <AudioRecorder onRecordingComplete={addAudioElement} />
+        
+
+        <Button
+          h="2.5rem"
+          w="2.5rem"
+          bg="success700"
+          hoverBg="success600"
+          rounded="circle"
+          m={{ r: "1rem" }}
+          onClick={start}
+          shadow="2"
+          hoverShadow="4"
+        >
+          
+          <Icon name="Play" size="20px" color="white" />
+        </Button>
+
+        <Button
+          h="2.5rem"
+          w="2.5rem"
+          bg="success700"
+          hoverBg="success600"
+          rounded="circle"
+          m={{ r: "1rem" }}
+          shadow="2"
+          hoverShadow="4"
+          onClick={stop}
+        >
+          <Icon name="Stop" size="20px" color="white" />   
+        </Button>
 
       </Div>
 

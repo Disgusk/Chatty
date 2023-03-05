@@ -7,3 +7,4 @@ cost_estimation.py
 frontend/node_modules/*
 sample.wav
 __pycache__
+venv
