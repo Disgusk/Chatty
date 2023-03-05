@@ -159,14 +159,14 @@ function App() {
           w="100%"
           h="100%"        
           textColor="black"
+          overflow="scroll"
           // chat window Div
 
         >
 
           <Div
             d="flex"            
-            flexDir="column"                                                    
-            overflow="scroll"
+            flexDir="column"                                                                
             m={{ t: "1rem" , r: "2rem", l: "2rem"}}
             >
 
