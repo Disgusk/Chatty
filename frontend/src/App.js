@@ -98,6 +98,7 @@ function App() {
     // document.body.appendChild(audio);
 
     let response = await fetch('http://localhost:5000/getResponse?audioUrl='+blob['url'], {method: 'POST', body:data}).then(
+      response => response.json()).then(
       console.log(response) 
     )
    

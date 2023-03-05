@@ -2,7 +2,7 @@ import os
 import azure.cognitiveservices.speech as speechsdk
 import json
 
-def pron_check_and_read_from_file(audio_path='sample.wav'):
+def pron_check_and_read_from_file(audio_path='test.wav'):
     speech_config = speechsdk.SpeechConfig(subscription=os.environ.get('SPEECH_KEY'), region=os.environ.get('SPEECH_REGION'))
     audio_config = speechsdk.AudioConfig(filename=audio_path)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
