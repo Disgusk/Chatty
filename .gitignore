@@ -5,3 +5,5 @@ notes.txt
 cost_estimation.py
 
 frontend/node_modules/*
+sample.wav
+__pycache__
