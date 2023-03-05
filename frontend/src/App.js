@@ -17,8 +17,10 @@ import AudioReactRecorder, { RecordState } from 'audio-react-recorder'
 function App() {
 
   const [botmessages, setBotMessages] = useState([]);
+  const [currentBotMessage, setCurrentBotMessage] = useState("...");
+  const [chatHistory, setChatHistory] = useState([{"role":"user", "content":"You are my roommate. We are doing grocery shopping in Trader Joe's."}]);
   const [usermessages, setUserMessages] = useState([]);
-  const [pronuns, setPronuns] = useState({hello: "90", bye: "80", good: "70", bad: "60",  how: "50", are: "40", you: "30", today: "20", fine: "10"});
+  const [pronuns, setPronuns] = useState({});
   
   // initialize recording stuff
   const [recordState, setRecord] = useState(null);
@@ -72,13 +74,13 @@ function App() {
     
     //value = value.replace("%", "")
    
-    if (value > 80) {
+    if (value > 90) {
       return "#2cba00"
-    } else if (value > 60) {
+    } else if (value > 80) {
       return "#a3ff00"
-    } else if (value > 40) {
+    } else if (value > 60) {
       return "#fff400"
-    } else if (value > 20) {
+    } else if (value > 40) {
       return "#ffa700"
     } else {
       return "#ff0000"
@@ -90,6 +92,7 @@ function App() {
     var file = new File([blob['blob']], "userAudio.wav");
     const data = new FormData();
     data.append('file', file);
+    data.append('history', JSON.stringify(chatHistory));
     
     // audio works file
     // const audio = document.createElement("audio");
@@ -97,10 +100,32 @@ function App() {
     // audio.controls = true;
     // document.body.appendChild(audio);
 
-    let response = await fetch('http://localhost:5000/getResponse?audioUrl='+blob['url'], {method: 'POST', body:data}).then(
-      response => response.json()).then(
-      console.log(response) 
-    )
+    const response = await fetch('http://localhost:5000/getResponse?audioUrl='+blob['url'], {method: 'POST', body:data});
+    const responseData = await response.json();
+    // check if data2 is empty
+    if (responseData) {
+      console.log(responseData)
+
+      setBotMessages([...botmessages, responseData['gpt_txt']])
+      setUserMessages([...usermessages, responseData['user_txt']])
+      setCurrentBotMessage(responseData['gpt_txt'])
+
+      setChatHistory(responseData['chat'])
+
+      /*
+      for (let pronun in responseData['score']) {
+        pronuns[pronun[0][0]] = pronun[0][1]
+        console.log(pronun[0][1])
+      } */
+
+      for (let i = 0; i < responseData['score'].length; i++) {
+        var newA = pronuns
+        newA[responseData['score'][i][0]] = responseData['score'][i][1]        
+        setPronuns(newA)
+      }
+
+    }
+   
    
     // URL.revokeObjectURL(blob)
   };
@@ -141,25 +166,9 @@ function App() {
           <Div
             d="flex"            
             flexDir="column"                                                    
-            overflowY="scroll"
+            overflow="scroll"
             m={{ t: "1rem" , r: "2rem", l: "2rem"}}
             >
-
-            <Div
-              bg="#21677eff"
-              shadow="3"
-              textColor="white"
-              d="flex"
-              align="flex-start"
-              w="100%"
-              display="flex"                
-              m={{ t: "1rem" , r: "2rem"}}
-              h="auto"
-              p={{ l: "2%", b: "2%", t: "2%" }}
-              rounded="md"              
-              >
-              "What are your symptoms?"
-            </Div>
 
             <Div  
               bg="#00d640ff"              
@@ -174,9 +183,51 @@ function App() {
               p={{ l: "2%", b: "2%", t: "2%" , r: "2%"}}
               rounded="md"                
               >              
-              Nothing, I'm fine.
+              You are my roommate. We are doing grocery shopping in Trader Joe's.
 
-            </Div>                 
+            </Div> 
+
+          
+          {usermessages.map((message, index) => (
+            <>
+              <Div
+                bg="#21677eff"
+                shadow="3"
+                textColor="white"
+                d="flex"
+                align="flex-start"
+                w="100%"
+                display="flex"                
+                m={{ t: "1rem" , r: "2rem"}}
+                h="auto"
+                p={{ l: "2%", b: "2%", t: "2%" }}
+                rounded="md"              
+                >
+                {message} 
+              </Div>
+
+              <Div  
+                bg="#00d640ff"              
+                shadow="3"
+                textColor="white"
+                d="flex"
+                align="flex-end"
+                w="100%"
+                display="flex"
+                m={{ t: "1rem" , r:"2rem"}}
+                h="auto"
+                p={{ l: "2%", b: "2%", t: "2%" , r: "2%"}}
+                rounded="md"                
+                >              
+                {botmessages[index]}
+
+              </Div> 
+            
+
+            </>
+          ))}
+
+                                      
                                                                                           
           </Div>
 

@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
+import json
 
 from chatty import *
 
@@ -11,10 +12,14 @@ app.config['DEBUG'] = True
 def chatbot():
     file = request.files['file']      
     file.save("test.wav")
+    
+    chat_history = request.form['history']
+    #print(chat_history)
 
-    chathistory = setup_chat(1)
+    chathistory = list(json.loads(chat_history))
+    print(type(chathistory))
     response = respond_to_user(chathistory, "test.wav")
 
     print(response)
 
-    return response
+    return json.dumps(response)
