@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_cors import CORS, cross_origin
 import json
 
@@ -23,3 +23,7 @@ def chatbot():
     print(response)
 
     return json.dumps(response)
+@app.route('/getAudio', methods = ['GET','POST'])
+def sendAudio():
+    path_to_file = "tts.wav"
+    return send_file(path_to_file, mimetype = "audio/wav")
